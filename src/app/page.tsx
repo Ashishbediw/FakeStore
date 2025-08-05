@@ -1,8 +1,18 @@
 
 'use client';
 
-import { useGetProductsQuery, useGetCategoriesQuery, useGetProductsByCategoryQuery } from "@/redux/api/storeApi";
+import { useGetProductsQuery } from "@/redux/api/storeApi";
 import { useState } from "react";
+
+type Product = {
+  id: number;
+  title: string;
+  price: number;
+  brand: string;
+  category: string;
+  image: string;
+  discount: number;
+};
 
 const Home = () => {
 
@@ -41,7 +51,7 @@ const Home = () => {
       <main className="px-6 py-10 max-w-7xl mx-auto">
         <h2 className="text-2xl font-semibold text-gray-800 mb-6">Featured Products</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {currentProducts.map((product: any) => (
+          {currentProducts.map((product: Product) => (
             <div key={product.id} className="bg-white rounded-lg shadow hover:shadow-md transition p-4">
               <img
                 src={product.image}
