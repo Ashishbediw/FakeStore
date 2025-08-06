@@ -2,6 +2,7 @@
 
 import { useGetProductsQuery, useGetCategoriesQuery, useGetProductsByCategoryQuery } from "@/redux/api/storeApi";
 import { useEffect, useState } from "react";
+import { useRouter } from 'next/navigation';
 
 type Product = {
   id: number;
@@ -17,10 +18,13 @@ const Home = () => {
   const [selectedCategory, setSelectedCategry] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
+  const router = useRouter();
 
   const { data: categories = [] } = useGetCategoriesQuery({});
 
-  
+  const handleLogin = () => {
+    router.push('./login')
+  }
   // const { data: productData, isLoading, isError } =
   //   selectedCategory === 'all'
   //     ? useGetProductsQuery({})
@@ -30,22 +34,22 @@ const Home = () => {
 
 
   const {
-  data: allProductsData,
-  isLoading: isAllLoading,
-  isError: isAllError,
-} = useGetProductsQuery({}, { skip: selectedCategory !== 'all' });
+    data: allProductsData,
+    isLoading: isAllLoading,
+    isError: isAllError,
+  } = useGetProductsQuery({}, { skip: selectedCategory !== 'all' });
 
-const {
-  data: categoryProductsData,
-  isLoading: isCategoryLoading,
-  isError: isCategoryError,
-} = useGetProductsByCategoryQuery(selectedCategory, {
-  skip: selectedCategory === 'all',
-});
+  const {
+    data: categoryProductsData,
+    isLoading: isCategoryLoading,
+    isError: isCategoryError,
+  } = useGetProductsByCategoryQuery(selectedCategory, {
+    skip: selectedCategory === 'all',
+  });
 
-const productData = selectedCategory === 'all' ? allProductsData : categoryProductsData;
-const isLoading = selectedCategory === 'all' ? isAllLoading : isCategoryLoading;
-const isError = selectedCategory === 'all' ? isAllError : isCategoryError;
+  const productData = selectedCategory === 'all' ? allProductsData : categoryProductsData;
+  const isLoading = selectedCategory === 'all' ? isAllLoading : isCategoryLoading;
+  const isError = selectedCategory === 'all' ? isAllError : isCategoryError;
 
 
   const products = productData?.products || productData || [];
@@ -77,11 +81,23 @@ const isError = selectedCategory === 'all' ? isAllError : isCategoryError;
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow py-6 px-4 text-center">
-        <h1 className="text-4xl font-bold text-gray-800">🛒 FakeStore</h1>
-        <p className="mt-2 text-gray-500">Discover amazing products at unbeatable prices</p>
-      </header>
-
+       <header className="bg-white shadow py-6 px-6 flex items-center justify-between">
+    <div className="flex items-center space-x-2">
+      <span className="text-3xl">🛒</span>
+      <h1 className="text-2xl font-bold text-gray-800">FakeStore</h1>
+    </div>
+    <p className="text-center text-gray-500 text-sm flex-1">
+      Discover amazing products at unbeatable prices
+    </p>
+    <div className="flex justify-end">
+      <button
+        onClick={handleLogin}
+        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded shadow transition duration-200"
+      >
+        LogIn
+      </button>
+    </div>
+  </header>
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
           <h2 className="text-2xl font-semibold text-gray-800">Featured Products</h2>
@@ -98,11 +114,10 @@ const isError = selectedCategory === 'all' ? isAllError : isCategoryError;
         <div className="flex overflow-x-auto gap-3 mb-8 pb-2">
           <button
             onClick={() => setSelectedCategry("all")}
-            className={`px-4 py-2 whitespace-nowrap rounded-md border transition ${
-              selectedCategory === "all"
+            className={`px-4 py-2 whitespace-nowrap rounded-md border transition ${selectedCategory === "all"
                 ? "bg-blue-600 text-white"
                 : "bg-white text-gray-700 hover:bg-gray-100"
-            }`}
+              }`}
           >
             All
           </button>
@@ -110,11 +125,10 @@ const isError = selectedCategory === 'all' ? isAllError : isCategoryError;
             <button
               key={cat}
               onClick={() => setSelectedCategry(cat)}
-              className={`px-4 py-2 whitespace-nowrap capitalize rounded-md border transition ${
-                selectedCategory === cat
+              className={`px-4 py-2 whitespace-nowrap capitalize rounded-md border transition ${selectedCategory === cat
                   ? "bg-blue-600 text-white"
                   : "bg-white text-gray-700 hover:bg-gray-100"
-              }`}
+                }`}
             >
               {cat}
             </button>
@@ -149,11 +163,10 @@ const isError = selectedCategory === 'all' ? isAllError : isCategoryError;
           <button
             onClick={handlePrev}
             disabled={currentPage === 1}
-            className={`px-5 py-2 rounded-md font-medium transition ${
-              currentPage === 1
+            className={`px-5 py-2 rounded-md font-medium transition ${currentPage === 1
                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 : 'bg-blue-600 text-white hover:bg-blue-700'
-            }`}
+              }`}
           >
             Previous
           </button>
@@ -163,11 +176,10 @@ const isError = selectedCategory === 'all' ? isAllError : isCategoryError;
           <button
             onClick={handleNext}
             disabled={currentPage === totalPages}
-            className={`px-5 py-2 rounded-md font-medium transition ${
-              currentPage === totalPages
+            className={`px-5 py-2 rounded-md font-medium transition ${currentPage === totalPages
                 ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                 : 'bg-blue-600 text-white hover:bg-blue-700'
-            }`}
+              }`}
           >
             Next
           </button>

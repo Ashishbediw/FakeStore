@@ -1,8 +1,9 @@
-
 'use client';
+
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -20,32 +21,50 @@ export default function LoginPage() {
     if (res?.ok) {
       router.push("/");
     } else {
-      alert("Invalid credentials");
+      toast.error("Invalid credentials");
     }
   };
 
   return (
-    <div className="flex flex-col items-center mt-20">
-      <h2 className="text-2xl mb-4">Login</h2>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4 w-64">
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="p-2 border"
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="p-2 border"
-        />
-        <button type="submit" className="bg-blue-500 text-white py-2 rounded">
-          Sign In
-        </button>
-      </form>
+    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4">
+      <div className="bg-white shadow-md rounded-lg p-8 w-full max-w-sm">
+        <h2 className="text-3xl font-bold text-center text-gray-800 mb-2">🛒 FakeStore</h2>
+        <p className="text-sm text-gray-500 text-center mb-6">Log in to discover amazing deals</p>
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <input
+            type="email"
+            placeholder="Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="p-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
+          <button
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded transition duration-200"
+          >
+            Sign In
+          </button>
+        </form>
+
+        <p className="mt-4 text-center text-sm text-gray-500">
+          Don't have an account?{" "}
+          <br />
+          <span>
+            username: ashish@example.com
+            <br />
+            password: Test@123
+          </span>
+            
+        </p>
+      </div>
     </div>
   );
 }
