@@ -4,7 +4,7 @@ import { useGetProductsQuery, useGetCategoriesQuery, useGetProductsByCategoryQue
 import { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
 import { useDispatch, UseDispatch } from "react-redux";
-import cart, { addToCart } from "../../redux/slices/cartSlice"
+import  { addToCart } from "../../redux/slices/cartSlice"
 
 type Product = {
     id: number;
@@ -35,6 +35,7 @@ const Dashboard = () => {
     } = useGetProductsByCategoryQuery(selectedCategory, {
         skip: selectedCategory === 'all',
     });
+    
 
     const productData = selectedCategory === 'all' ? allProductsData : categoryProductsData;
     const isLoading = selectedCategory === 'all' ? isAllLoading : isCategoryLoading;
@@ -68,7 +69,9 @@ const Dashboard = () => {
     if (isLoading) return <p className="text-center text-lg">Loading...</p>;
     if (isError) return <p className="text-center text-red-500">Error loading products.</p>;
 
-
+    const handleCart = () => {
+        router.push('./cart')
+    }
 
     return (
         <div className="min-h-screen bg-gray-50">
@@ -82,6 +85,7 @@ const Dashboard = () => {
                 </p>
                 <div className="flex justify-end">
                     <button
+                    onClick={handleCart}
                         className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded shadow transition duration-200"
                     >
                         Go To cart
