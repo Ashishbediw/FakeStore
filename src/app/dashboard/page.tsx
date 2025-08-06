@@ -3,7 +3,7 @@
 import { useGetProductsQuery, useGetCategoriesQuery, useGetProductsByCategoryQuery } from "@/redux/api/storeApi";
 import { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
-import { useDispatch, UseDispatch } from "react-redux";
+import { useDispatch,  } from "react-redux";
 import  { addToCart } from "../../redux/slices/cartSlice"
 
 type Product = {
