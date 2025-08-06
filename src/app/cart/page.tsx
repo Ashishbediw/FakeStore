@@ -1,7 +1,6 @@
 'use client';
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import Image from "next/image";
 const Cart = () => {
     const cartItems = useSelector((state:RootState) => state.cart.items)
     return(

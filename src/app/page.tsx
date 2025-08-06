@@ -63,7 +63,7 @@ const Home = () => {
     product.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const itemsPerPage = 10;
+  const itemsPerPage = 8;
   const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentProducts = filteredProducts.slice(startIndex, startIndex + itemsPerPage);
