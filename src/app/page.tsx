@@ -19,10 +19,30 @@ const Home = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const { data: categories = [] } = useGetCategoriesQuery({});
-  const { data: productData, isLoading, isError } =
-    selectedCategory === 'all'
-      ? useGetProductsQuery({})
-      : useGetProductsByCategoryQuery(selectedCategory);
+  // const { data: productData, isLoading, isError } =
+  //   selectedCategory === 'all'
+  //     ? useGetProductsQuery({})
+  //     : useGetProductsByCategoryQuery(selectedCategory);
+
+
+  const {
+  data: allProductsData,
+  isLoading: isAllLoading,
+  isError: isAllError,
+} = useGetProductsQuery({}, { skip: selectedCategory !== 'all' });
+
+const {
+  data: categoryProductsData,
+  isLoading: isCategoryLoading,
+  isError: isCategoryError,
+} = useGetProductsByCategoryQuery(selectedCategory, {
+  skip: selectedCategory === 'all',
+});
+
+const productData = selectedCategory === 'all' ? allProductsData : categoryProductsData;
+const isLoading = selectedCategory === 'all' ? isAllLoading : isCategoryLoading;
+const isError = selectedCategory === 'all' ? isAllError : isCategoryError;
+
 
   const products = productData?.products || productData || [];
   const categoriesList = categories?.categories || [];
