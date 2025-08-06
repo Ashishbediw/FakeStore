@@ -55,7 +55,7 @@ export default function LoginPage() {
         </form>
 
         <p className="mt-4 text-center text-sm text-gray-500">
-          Don't have an account?{" "}
+          Dont not have an account?{" "}
           <br />
           <span>
             username: ashish@example.com
