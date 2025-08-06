@@ -21,9 +21,11 @@ const Home = () => {
   const products = productData?.products || productData || [];
   const [currentPage, setCurrentPage] = useState(1);
   const categoriesList = categories?.categories || [];
+  const [searchQuery, setSearchQuery] = useState('');
 
-  
-  
+
+
+
   useEffect(() => {
     setCurrentPage(1);
   }, [selectedCategory])
@@ -73,8 +75,8 @@ const Home = () => {
               key={cat}
               onClick={() => setSelectedCategry(cat)}
               className={`px-4 py-2 rounded-md border capitalize ${selectedCategory === cat
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-gray-700"
+                ? "bg-blue-600 text-white"
+                : "bg-white text-gray-700"
                 }`}
             >
               {cat}
@@ -82,23 +84,52 @@ const Home = () => {
           ))}
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {currentProducts.map((product: Product) => (
-            <div key={product.id} className="bg-white rounded-lg shadow hover:shadow-md transition p-4">
-              <img
-                src={product.image}
-                alt={product.title}
-                className="w-full h-48 object-cover mb-4 rounded"
-              />
-              <h3 className="text-lg font-semibold text-gray-700">{product.title}</h3>
-              <p className="text-gray-600 mt-1">Brand: {product.brand}</p>
-              <p className="text-gray-500 text-sm mb-2">Category: {product.category}</p>
-              <p className="text-gray-800 font-bold">${product.price}</p>
-              {product.discount > 0 && (
-                <p className="text-green-600 font-medium mt-1">{product.discount}% OFF</p>
-              )}
-            </div>
 
-          ))}
+          <div className="my-6">
+            <input
+              type="text"
+              placeholder="Search product by name..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full sm:w-1/2 px-4 py-2 border rounded-md shadow-sm"
+            />
+          </div>
+
+          {/* for search parameter */}
+          {searchQuery ? products.filter((product: Product) => product.title.toLowerCase().includes(searchQuery.toLowerCase()))
+            .map((product: Product) => (
+              <div key={product.id} className="bg-white rounded-lg shadow hover:shadow-md transition p-4">
+                <img
+                  src={product.image}
+                  alt={product.title}
+                  className="w-full h-48 object-cover mb-4 rounded"
+                />
+                <h3 className="text-lg font-semibold text-gray-700">{product.title}</h3>
+                <p className="text-gray-600 mt-1">Brand: {product.brand}</p>
+                <p className="text-gray-500 text-sm mb-2">Category: {product.category}</p>
+                <p className="text-gray-800 font-bold">${product.price}</p>
+                {product.discount > 0 && (
+                  <p className="text-green-600 font-medium mt-1">{product.discount}% OFF</p>
+                )}
+              </div>
+            ))
+            : currentProducts.map((product: Product) => (
+              <div key={product.id} className="bg-white rounded-lg shadow hover:shadow-md transition p-4">
+                <img
+                  src={product.image}
+                  alt={product.title}
+                  className="w-full h-48 object-cover mb-4 rounded"
+                />
+                <h3 className="text-lg font-semibold text-gray-700">{product.title}</h3>
+                <p className="text-gray-600 mt-1">Brand: {product.brand}</p>
+                <p className="text-gray-500 text-sm mb-2">Category: {product.category}</p>
+                <p className="text-gray-800 font-bold">${product.price}</p>
+                {product.discount > 0 && (
+                  <p className="text-green-600 font-medium mt-1">{product.discount}% OFF</p>
+                )}
+              </div>
+
+            ))}
         </div>
         <div className="flex justify-center items-center gap-4 mt-8">
           <button
