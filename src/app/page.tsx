@@ -1,8 +1,8 @@
 
 'use client';
 
-import { useGetProductsQuery } from "@/redux/api/storeApi";
-import { useState } from "react";
+import { useGetProductsQuery, useGetCategoriesQuery, useGetProductsByCategoryQuery } from "@/redux/api/storeApi";
+import { useEffect, useState } from "react";
 
 type Product = {
   id: number;
@@ -15,16 +15,23 @@ type Product = {
 };
 
 const Home = () => {
+  const [selectedCategory, setSelectedCategry] = useState<string>('all');    //for category selection
+  const { data: categories = [] } = useGetCategoriesQuery({});
+  const { data: productData, isLoading, isError } = selectedCategory === 'all' ? useGetProductsQuery({}) : useGetProductsByCategoryQuery(selectedCategory);
+  const products = productData?.products || productData || [];
+  const [currentPage, setCurrentPage] = useState(1);
+  const categoriesList = categories?.categories || [];
 
   
-  const { data, isLoading, isError } = useGetProductsQuery({});
-  const products = data?.products || [];
+  
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory])
+
 
   //pagination
-  const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const totalPages = Math.ceil(products.length / itemsPerPage);
-
   //pagination logic
   const startIndex = (currentPage - 1) * itemsPerPage;
   const currentProducts = products.slice(startIndex, startIndex + itemsPerPage)
@@ -50,6 +57,30 @@ const Home = () => {
 
       <main className="px-6 py-10 max-w-7xl mx-auto">
         <h2 className="text-2xl font-semibold text-gray-800 mb-6">Featured Products</h2>
+
+        {/* category filter */}
+
+        <div>
+          <button onClick={() => setSelectedCategry("all")}
+            className={`px-4 py-2 rounded-md border ${selectedCategory === "all"
+              ? "bg-blue-600 text-white"
+              : "bg-white text-gray-700"
+              }`}>
+            All
+          </button>
+          {categoriesList.map((cat: string) => (
+            <button
+              key={cat}
+              onClick={() => setSelectedCategry(cat)}
+              className={`px-4 py-2 rounded-md border capitalize ${selectedCategory === cat
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-gray-700"
+                }`}
+            >
+              {cat}
+            </button>
+          ))}
+        </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {currentProducts.map((product: Product) => (
             <div key={product.id} className="bg-white rounded-lg shadow hover:shadow-md transition p-4">
@@ -74,8 +105,8 @@ const Home = () => {
             onClick={handlePrev}
             disabled={currentPage === 1}
             className={`px-5 py-2 rounded-md font-medium transition ${currentPage === 1
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                : 'bg-blue-600 text-white hover:bg-blue-700'
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-blue-600 text-white hover:bg-blue-700'
               }`}
           >
             Previous
@@ -87,8 +118,8 @@ const Home = () => {
             onClick={handleNext}
             disabled={currentPage === totalPages}
             className={`px-5 py-2 rounded-md font-medium transition ${currentPage === totalPages
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                : 'bg-blue-600 text-white hover:bg-blue-700'
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-blue-600 text-white hover:bg-blue-700'
               }`}
           >
             Next
