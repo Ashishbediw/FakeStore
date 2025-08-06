@@ -19,10 +19,14 @@ const Home = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const { data: categories = [] } = useGetCategoriesQuery({});
+
+  
   // const { data: productData, isLoading, isError } =
   //   selectedCategory === 'all'
   //     ? useGetProductsQuery({})
   //     : useGetProductsByCategoryQuery(selectedCategory);
+
+  //we cant not add hooks in ternary operater as it is called hooks conditionaly but acc to rules of hooks, hooks should came unconditionally 
 
 
   const {
