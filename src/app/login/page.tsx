@@ -83,7 +83,7 @@ export default function LoginPage() {
         </form>
 
         <p className="mt-4 text-center text-sm text-gray-500">
-          Don't have an account?
+          Don not have an account?
           <br />
           <span className="block mt-2">
             <strong>Username:</strong> ashish@example.com
