@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useGetProductsQuery, useGetCategoriesQuery, useGetProductsByCategoryQuery } from "@/redux/api/storeApi";
@@ -15,130 +14,122 @@ type Product = {
 };
 
 const Home = () => {
-  const [selectedCategory, setSelectedCategry] = useState<string>('all');    //for category selection
-  const { data: categories = [] } = useGetCategoriesQuery({});
-  const { data: productData, isLoading, isError } = selectedCategory === 'all' ? useGetProductsQuery({}) : useGetProductsByCategoryQuery(selectedCategory);
-  const products = productData?.products || productData || [];
-  const [currentPage, setCurrentPage] = useState(1);
-  const categoriesList = categories?.categories || [];
+  const [selectedCategory, setSelectedCategry] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
 
+  const { data: categories = [] } = useGetCategoriesQuery({});
+  const { data: productData, isLoading, isError } =
+    selectedCategory === 'all'
+      ? useGetProductsQuery({})
+      : useGetProductsByCategoryQuery(selectedCategory);
 
-
+  const products = productData?.products || productData || [];
+  const categoriesList = categories?.categories || [];
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedCategory])
+  }, [selectedCategory]);
 
+  const filteredProducts = products.filter((product: Product) =>
+    product.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
-  //pagination
   const itemsPerPage = 10;
-  const totalPages = Math.ceil(products.length / itemsPerPage);
-  //pagination logic
+  const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentProducts = products.slice(startIndex, startIndex + itemsPerPage)
+  const currentProducts = filteredProducts.slice(startIndex, startIndex + itemsPerPage);
+
+  const handleNext = () => {
+    if (currentPage < totalPages) setCurrentPage(prev => prev + 1);
+  };
+
+  const handlePrev = () => {
+    if (currentPage > 1) setCurrentPage(prev => prev - 1);
+  };
 
   if (isLoading) return <p className="text-center text-lg">Loading...</p>;
   if (isError) return <p className="text-center text-red-500">Error loading products.</p>;
 
-  const handleNext = () => {
-    if (currentPage < totalPages) setCurrentPage(prev => prev + 1);
-  }
-
-  const handlePrev = () => {
-    if (currentPage > 1) setCurrentPage(prev => prev - 1)
-  }
-
   return (
     <div className="min-h-screen bg-gray-50">
-
-      <header className="bg-white shadow-sm py-8 px-4 text-center">
-        <h1 className="text-4xl font-bold text-gray-800">Welcome to FakeStore</h1>
+      <header className="bg-white shadow py-6 px-4 text-center">
+        <h1 className="text-4xl font-bold text-gray-800">🛒 FakeStore</h1>
         <p className="mt-2 text-gray-500">Discover amazing products at unbeatable prices</p>
       </header>
 
-      <main className="px-6 py-10 max-w-7xl mx-auto">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-6">Featured Products</h2>
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+          <h2 className="text-2xl font-semibold text-gray-800">Featured Products</h2>
+          <input
+            type="text"
+            placeholder="Search by product name..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="px-4 py-2 w-full sm:w-80 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+        </div>
 
-        {/* category filter */}
-
-        <div>
-          <button onClick={() => setSelectedCategry("all")}
-            className={`px-4 py-2 rounded-md border ${selectedCategory === "all"
-              ? "bg-blue-600 text-white"
-              : "bg-white text-gray-700"
-              }`}>
+        {/* Category Filter */}
+        <div className="flex overflow-x-auto gap-3 mb-8 pb-2">
+          <button
+            onClick={() => setSelectedCategry("all")}
+            className={`px-4 py-2 whitespace-nowrap rounded-md border transition ${
+              selectedCategory === "all"
+                ? "bg-blue-600 text-white"
+                : "bg-white text-gray-700 hover:bg-gray-100"
+            }`}
+          >
             All
           </button>
           {categoriesList.map((cat: string) => (
             <button
               key={cat}
               onClick={() => setSelectedCategry(cat)}
-              className={`px-4 py-2 rounded-md border capitalize ${selectedCategory === cat
-                ? "bg-blue-600 text-white"
-                : "bg-white text-gray-700"
-                }`}
+              className={`px-4 py-2 whitespace-nowrap capitalize rounded-md border transition ${
+                selectedCategory === cat
+                  ? "bg-blue-600 text-white"
+                  : "bg-white text-gray-700 hover:bg-gray-100"
+              }`}
             >
               {cat}
             </button>
           ))}
         </div>
+
+        {/* Product Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-
-          <div className="my-6">
-            <input
-              type="text"
-              placeholder="Search product by name..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full sm:w-1/2 px-4 py-2 border rounded-md shadow-sm"
-            />
-          </div>
-
-          {/* for search parameter */}
-          {searchQuery ? products.filter((product: Product) => product.title.toLowerCase().includes(searchQuery.toLowerCase()))
-            .map((product: Product) => (
-              <div key={product.id} className="bg-white rounded-lg shadow hover:shadow-md transition p-4">
-                <img
-                  src={product.image}
-                  alt={product.title}
-                  className="w-full h-48 object-cover mb-4 rounded"
-                />
-                <h3 className="text-lg font-semibold text-gray-700">{product.title}</h3>
-                <p className="text-gray-600 mt-1">Brand: {product.brand}</p>
-                <p className="text-gray-500 text-sm mb-2">Category: {product.category}</p>
-                <p className="text-gray-800 font-bold">${product.price}</p>
-                {product.discount > 0 && (
-                  <p className="text-green-600 font-medium mt-1">{product.discount}% OFF</p>
-                )}
-              </div>
-            ))
-            : currentProducts.map((product: Product) => (
-              <div key={product.id} className="bg-white rounded-lg shadow hover:shadow-md transition p-4">
-                <img
-                  src={product.image}
-                  alt={product.title}
-                  className="w-full h-48 object-cover mb-4 rounded"
-                />
-                <h3 className="text-lg font-semibold text-gray-700">{product.title}</h3>
-                <p className="text-gray-600 mt-1">Brand: {product.brand}</p>
-                <p className="text-gray-500 text-sm mb-2">Category: {product.category}</p>
-                <p className="text-gray-800 font-bold">${product.price}</p>
-                {product.discount > 0 && (
-                  <p className="text-green-600 font-medium mt-1">{product.discount}% OFF</p>
-                )}
-              </div>
-
-            ))}
+          {currentProducts.map((product: Product) => (
+            <div
+              key={product.id}
+              className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-4"
+            >
+              <img
+                src={product.image}
+                alt={product.title}
+                className="w-full h-48 object-contain mb-4 rounded"
+              />
+              <h3 className="text-lg font-semibold text-gray-800 truncate">{product.title}</h3>
+              <p className="text-sm text-gray-500 mt-1">Brand: {product.brand}</p>
+              <p className="text-sm text-gray-400">Category: {product.category}</p>
+              <p className="text-lg font-bold text-blue-700 mt-2">${product.price}</p>
+              {product.discount > 0 && (
+                <p className="text-sm text-green-600 mt-1">{product.discount}% OFF</p>
+              )}
+            </div>
+          ))}
         </div>
-        <div className="flex justify-center items-center gap-4 mt-8">
+
+        {/* Pagination */}
+        <div className="flex justify-center items-center gap-4 mt-10">
           <button
             onClick={handlePrev}
             disabled={currentPage === 1}
-            className={`px-5 py-2 rounded-md font-medium transition ${currentPage === 1
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : 'bg-blue-600 text-white hover:bg-blue-700'
-              }`}
+            className={`px-5 py-2 rounded-md font-medium transition ${
+              currentPage === 1
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'bg-blue-600 text-white hover:bg-blue-700'
+            }`}
           >
             Previous
           </button>
@@ -148,16 +139,16 @@ const Home = () => {
           <button
             onClick={handleNext}
             disabled={currentPage === totalPages}
-            className={`px-5 py-2 rounded-md font-medium transition ${currentPage === totalPages
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : 'bg-blue-600 text-white hover:bg-blue-700'
-              }`}
+            className={`px-5 py-2 rounded-md font-medium transition ${
+              currentPage === totalPages
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'bg-blue-600 text-white hover:bg-blue-700'
+            }`}
           >
             Next
           </button>
         </div>
       </main>
-
     </div>
   );
 };
