@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useEffect, useState } from "react";
 import { loadCartFromLocalStorage } from "@/lib/localstorage";
-import { initializecart } from "@/redux/slices/cartSlice";
+import { initializecart, removeFromCart } from "@/redux/slices/cartSlice";
 
 const Cart = () => {
     const cartItems = useSelector((state: RootState) => state.cart.items);
@@ -50,6 +50,14 @@ const Cart = () => {
                                 <div className="text-right">
                                     <p className="text-base font-semibold text-blue-600">${item.price.toFixed(2)}</p>
                                 </div>
+                                <button
+                                        onClick={() => dispatch(removeFromCart(item.id))}
+                                        className="text-red-500 hover:text-red-700 text-sm"
+                                        title="Remove from cart"
+                                    >
+                                       <span className="text-lg">❌</span>
+
+                                    </button>
                             </div>
                         ))}
 
