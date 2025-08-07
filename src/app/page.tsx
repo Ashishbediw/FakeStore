@@ -24,20 +24,6 @@ const Home = () => {
 
   const { data: categories = [] } = useGetCategoriesQuery({});
 
-  const handleLogin = () => {
-    router.push('./login')
-  }
-  const handleDashboard = () => {
-    router.push('./dashboard')
-  }
-  // const { data: productData, isLoading, isError } =
-  //   selectedCategory === 'all'
-  //     ? useGetProductsQuery({})
-  //     : useGetProductsByCategoryQuery(selectedCategory);
-
-  //we cant not add hooks in ternary operater as it is called hooks conditionaly but acc to rules of hooks, hooks should came unconditionally 
-
-
   const {
     data: allProductsData,
     isLoading: isAllLoading,
@@ -55,7 +41,6 @@ const Home = () => {
   const productData = selectedCategory === 'all' ? allProductsData : categoryProductsData;
   const isLoading = selectedCategory === 'all' ? isAllLoading : isCategoryLoading;
   const isError = selectedCategory === 'all' ? isAllError : isCategoryError;
-
 
   const products = productData?.products || productData || [];
   const categoriesList = categories?.categories || [];
@@ -81,57 +66,62 @@ const Home = () => {
     if (currentPage > 1) setCurrentPage(prev => prev - 1);
   };
 
+  const handleLogin = () => router.push('./login');
+  const handleDashboard = () => router.push('./dashboard');
+
   if (isLoading) return <p className="text-center text-lg">Loading...</p>;
   if (isError) return <p className="text-center text-red-500">Error loading products.</p>;
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow py-6 px-6 flex items-center justify-between">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+      {/* Sticky Header */}
+      <header className="sticky top-0 z-50 bg-white bg-opacity-90 backdrop-blur-md shadow-md py-4 px-6 flex items-center justify-between">
         <div className="flex items-center space-x-2">
-          <span className="text-3xl">🛒</span>
-          <h1 className="text-2xl font-bold text-gray-800">FakeStore</h1>
+          <span className="text-2xl">🛒</span>
+          <h1 className="text-xl font-bold text-blue-800">FakeStore</h1>
         </div>
-        <p className="text-center text-gray-500 text-sm flex-1">
+        <p className="text-gray-500 text-sm hidden sm:block">
           Discover amazing products at unbeatable prices
         </p>
-        <div className="flex justify-end">
+        <div>
           {status === "loading" ? null : session ? (
             <button
               onClick={handleDashboard}
-              className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded shadow transition duration-200"
+              className="bg-green-500 hover:bg-green-600 text-white font-semibold text-sm py-2 px-4 rounded-md transition"
             >
               Dashboard
             </button>
           ) : (
             <button
               onClick={handleLogin}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded shadow transition duration-200"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm py-2 px-4 rounded-md transition"
             >
               Login
             </button>
           )}
-
         </div>
       </header>
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
-          <h2 className="text-2xl font-semibold text-gray-800">Featured Products</h2>
+
+      <main className="max-w-7xl mx-auto px-4 py-8">
+        {/* Search + Title */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-3">
+          <h2 className="text-xl font-bold text-gray-800">✨ Featured Products</h2>
           <input
             type="text"
-            placeholder="Search by product name..."
+            placeholder="Search products..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="px-4 py-2 w-full sm:w-80 border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="px-4 py-2 w-full sm:w-80 text-sm border rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
         </div>
 
         {/* Category Filter */}
-        <div className="flex overflow-x-auto gap-3 mb-8 pb-2">
+        <div className="flex overflow-x-auto gap-2 mb-6 pb-1 scrollbar-hide">
           <button
             onClick={() => setSelectedCategry("all")}
-            className={`px-4 py-2 whitespace-nowrap rounded-md border transition ${selectedCategory === "all"
+            className={`px-3 py-1.5 rounded-full text-sm font-medium border transition-all ${selectedCategory === "all"
               ? "bg-blue-600 text-white"
-              : "bg-white text-gray-700 hover:bg-gray-100"
+              : "bg-white text-gray-700 hover:bg-blue-100"
               }`}
           >
             All
@@ -140,9 +130,9 @@ const Home = () => {
             <button
               key={cat}
               onClick={() => setSelectedCategry(cat)}
-              className={`px-4 py-2 whitespace-nowrap capitalize rounded-md border transition ${selectedCategory === cat
+              className={`px-3 py-1.5 rounded-full capitalize text-sm font-medium border transition-all ${selectedCategory === cat
                 ? "bg-blue-600 text-white"
-                : "bg-white text-gray-700 hover:bg-gray-100"
+                : "bg-white text-gray-700 hover:bg-blue-100"
                 }`}
             >
               {cat}
@@ -151,21 +141,22 @@ const Home = () => {
         </div>
 
         {/* Product Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
           {currentProducts.map((product: Product) => (
             <div
               key={product.id}
-              className="bg-white rounded-xl shadow-md hover:shadow-lg transition-all p-4"
+              className="bg-white rounded-xl shadow hover:shadow-lg transition-all p-4 flex flex-col"
             >
               <img
                 src={product.image}
                 alt={product.title}
-                className="w-full h-48 object-contain mb-4 rounded"
+                className="w-full h-40 object-contain mb-3 rounded"
               />
-              <h3 className="text-lg font-semibold text-gray-800 truncate">{product.title}</h3>
+              <h3 className="text-sm font-semibold text-gray-800 truncate">{product.title}</h3>
+              <p className="text-sm text-blue-600 font-bold mt-1">${product.price.toFixed(2)}</p>
               <button
                 onClick={() => router.push(`/products/${product.id}`)}
-                className="mt-2 w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded-md transition duration-200 shadow"
+                className="mt-3 w-full bg-blue-600 hover:bg-blue-700 text-white text-sm py-1.5 px-3 rounded-md transition shadow"
               >
                 View Details
               </button>
@@ -174,31 +165,33 @@ const Home = () => {
         </div>
 
         {/* Pagination */}
-        <div className="flex justify-center items-center gap-4 mt-10">
-          <button
-            onClick={handlePrev}
-            disabled={currentPage === 1}
-            className={`px-5 py-2 rounded-md font-medium transition ${currentPage === 1
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : 'bg-blue-600 text-white hover:bg-blue-700'
-              }`}
-          >
-            Previous
-          </button>
-          <span className="text-gray-700 font-semibold">
-            Page {currentPage} of {totalPages}
-          </span>
-          <button
-            onClick={handleNext}
-            disabled={currentPage === totalPages}
-            className={`px-5 py-2 rounded-md font-medium transition ${currentPage === totalPages
-              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : 'bg-blue-600 text-white hover:bg-blue-700'
-              }`}
-          >
-            Next
-          </button>
-        </div>
+        {totalPages > 1 && (
+          <div className="flex justify-center items-center gap-4 mt-10">
+            <button
+              onClick={handlePrev}
+              disabled={currentPage === 1}
+              className={`px-4 py-1.5 text-sm rounded-md font-medium transition ${currentPage === 1
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'bg-blue-600 text-white hover:bg-blue-700'
+                }`}
+            >
+              Previous
+            </button>
+            <span className="text-sm text-gray-700 font-semibold">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              onClick={handleNext}
+              disabled={currentPage === totalPages}
+              className={`px-4 py-1.5 text-sm rounded-md font-medium transition ${currentPage === totalPages
+                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                : 'bg-blue-600 text-white hover:bg-blue-700'
+                }`}
+            >
+              Next
+            </button>
+          </div>
+        )}
       </main>
     </div>
   );
