@@ -2,12 +2,13 @@
 
 import { useParams } from 'next/navigation';
 import { useGetProductByIdQuery } from '../../../redux/api/storeApi';
-
+import { useDispatch } from 'react-redux';
 
 export default function ProductDetailPage() {
     const { id } = useParams();
     const { data, error, isLoading } = useGetProductByIdQuery(id as string);
-    
+    const dispatch = useDispatch();
+
     if (isLoading) return <div className="text-center py-10 text-gray-600">Loading...</div>;
     if (error) return <div className="text-center py-10 text-red-500">Something went wrong.</div>;
 
@@ -15,7 +16,6 @@ export default function ProductDetailPage() {
 
     if (!product) return <div className="text-center py-10 text-gray-500">Product not found.</div>;
 
-   
 
     return (
         <div className="max-w-5xl mx-auto px-4 py-10">
@@ -44,9 +44,8 @@ export default function ProductDetailPage() {
                         <p><span className="font-medium">Color:</span> {product.color}</p>
                         <p><span className="font-medium">Category:</span> {product.category}</p>
                     </div>
-
-                  
                 </div>
+                
             </div>
         </div>
     );
