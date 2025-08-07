@@ -3,8 +3,9 @@
 import { useGetProductsQuery, useGetCategoriesQuery, useGetProductsByCategoryQuery } from "@/redux/api/storeApi";
 import { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
-import { useDispatch,  } from "react-redux";
-import  { addToCart } from "../../redux/slices/cartSlice"
+import { useDispatch, } from "react-redux";
+import { addToCart } from "../../redux/slices/cartSlice";
+import { signOut } from "next-auth/react";
 
 type Product = {
     id: number;
@@ -35,7 +36,8 @@ const Dashboard = () => {
     } = useGetProductsByCategoryQuery(selectedCategory, {
         skip: selectedCategory === 'all',
     });
-    
+
+
 
     const productData = selectedCategory === 'all' ? allProductsData : categoryProductsData;
     const isLoading = selectedCategory === 'all' ? isAllLoading : isCategoryLoading;
@@ -73,6 +75,12 @@ const Dashboard = () => {
         router.push('./cart')
     }
 
+    const handleLogout = () => {
+        signOut({
+            callbackUrl: '/',
+        });
+    }
+
     return (
         <div className="min-h-screen bg-gray-50">
             <header className="bg-white shadow py-6 px-6 flex items-center justify-between">
@@ -83,9 +91,15 @@ const Dashboard = () => {
                 <p className="text-center text-gray-500 text-sm flex-1">
                     Discover amazing products at unbeatable prices
                 </p>
-                <div className="flex justify-end">
+                <div className="flex justify-end gap-2">
                     <button
-                    onClick={handleCart}
+                        onClick={handleLogout}
+                        className="bg-red-600 hover:bg-red-700 text-white font-semibold py-2 px-6 rounded shadow transition duration-200"
+                    >
+                        Logout
+                    </button>
+                    <button
+                        onClick={handleCart}
                         className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded shadow transition duration-200"
                     >
                         Go To cart
@@ -149,10 +163,16 @@ const Dashboard = () => {
                                 <p className="text-sm text-green-600 mt-1">{product.discount}% OFF</p>
                             )}
                             <button
+                                onClick={() => router.push(`/products/${product.id}`)}
+                                className="mt-2 w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded-md transition duration-200 shadow"
+                            >
+                                 View Details
+                            </button>
+                            <button
                                 onClick={() => dispatch(addToCart(product))}
                                 className="mt-4 w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2 px-4 rounded-md transition duration-200 shadow"
                             >
-                                <span className="text-lg">🛒</span> Add to Cart
+                                 Add to Cart
                             </button>
 
                         </div>

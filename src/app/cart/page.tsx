@@ -4,12 +4,10 @@ import { RootState } from "@/redux/store";
 import { useEffect, useState } from "react";
 import { loadCartFromLocalStorage } from "@/lib/localstorage";
 import { initializecart } from "@/redux/slices/cartSlice";
-import { useSession } from "next-auth/react";
 
 const Cart = () => {
     const cartItems = useSelector((state:RootState) => state.cart.items);
     const disPatch = useDispatch(); 
-    const {data : session, status} = useSession();
     const [hydrated, setHydrated] = useState(false);
 
     useEffect(() => {

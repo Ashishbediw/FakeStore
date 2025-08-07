@@ -3,6 +3,7 @@
 import { useGetProductsQuery, useGetCategoriesQuery, useGetProductsByCategoryQuery } from "@/redux/api/storeApi";
 import { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
+import { useSession } from "next-auth/react";
 
 type Product = {
   id: number;
@@ -15,6 +16,7 @@ type Product = {
 };
 
 const Home = () => {
+  const { data: session, status } = useSession();
   const [selectedCategory, setSelectedCategry] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
@@ -24,6 +26,9 @@ const Home = () => {
 
   const handleLogin = () => {
     router.push('./login')
+  }
+  const handleDashboard = () => {
+    router.push('./dashboard')
   }
   // const { data: productData, isLoading, isError } =
   //   selectedCategory === 'all'
@@ -81,23 +86,33 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-       <header className="bg-white shadow py-6 px-6 flex items-center justify-between">
-    <div className="flex items-center space-x-2">
-      <span className="text-3xl">🛒</span>
-      <h1 className="text-2xl font-bold text-gray-800">FakeStore</h1>
-    </div>
-    <p className="text-center text-gray-500 text-sm flex-1">
-      Discover amazing products at unbeatable prices
-    </p>
-    <div className="flex justify-end">
-      <button
-        onClick={handleLogin}
-        className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded shadow transition duration-200"
-      >
-        LogIn
-      </button>
-    </div>
-  </header>
+      <header className="bg-white shadow py-6 px-6 flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <span className="text-3xl">🛒</span>
+          <h1 className="text-2xl font-bold text-gray-800">FakeStore</h1>
+        </div>
+        <p className="text-center text-gray-500 text-sm flex-1">
+          Discover amazing products at unbeatable prices
+        </p>
+        <div className="flex justify-end">
+          {status === "loading" ? null : session ? (
+            <button
+              onClick={handleDashboard}
+              className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded shadow transition duration-200"
+            >
+              Dashboard
+            </button>
+          ) : (
+            <button
+              onClick={handleLogin}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded shadow transition duration-200"
+            >
+              Login
+            </button>
+          )}
+
+        </div>
+      </header>
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
           <h2 className="text-2xl font-semibold text-gray-800">Featured Products</h2>
@@ -115,8 +130,8 @@ const Home = () => {
           <button
             onClick={() => setSelectedCategry("all")}
             className={`px-4 py-2 whitespace-nowrap rounded-md border transition ${selectedCategory === "all"
-                ? "bg-blue-600 text-white"
-                : "bg-white text-gray-700 hover:bg-gray-100"
+              ? "bg-blue-600 text-white"
+              : "bg-white text-gray-700 hover:bg-gray-100"
               }`}
           >
             All
@@ -126,8 +141,8 @@ const Home = () => {
               key={cat}
               onClick={() => setSelectedCategry(cat)}
               className={`px-4 py-2 whitespace-nowrap capitalize rounded-md border transition ${selectedCategory === cat
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-gray-700 hover:bg-gray-100"
+                ? "bg-blue-600 text-white"
+                : "bg-white text-gray-700 hover:bg-gray-100"
                 }`}
             >
               {cat}
@@ -148,12 +163,12 @@ const Home = () => {
                 className="w-full h-48 object-contain mb-4 rounded"
               />
               <h3 className="text-lg font-semibold text-gray-800 truncate">{product.title}</h3>
-              {/* <p className="text-sm text-gray-500 mt-1">Brand: {product.brand}</p>
-              <p className="text-sm text-gray-400">Category: {product.category}</p>
-              <p className="text-lg font-bold text-blue-700 mt-2">${product.price}</p>
-              {product.discount > 0 && (
-                <p className="text-sm text-green-600 mt-1">{product.discount}% OFF</p>
-              )} */}
+              <button
+                onClick={() => router.push(`/products/${product.id}`)}
+                className="mt-2 w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded-md transition duration-200 shadow"
+              >
+                View Details
+              </button>
             </div>
           ))}
         </div>
@@ -164,8 +179,8 @@ const Home = () => {
             onClick={handlePrev}
             disabled={currentPage === 1}
             className={`px-5 py-2 rounded-md font-medium transition ${currentPage === 1
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                : 'bg-blue-600 text-white hover:bg-blue-700'
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-blue-600 text-white hover:bg-blue-700'
               }`}
           >
             Previous
@@ -177,8 +192,8 @@ const Home = () => {
             onClick={handleNext}
             disabled={currentPage === totalPages}
             className={`px-5 py-2 rounded-md font-medium transition ${currentPage === totalPages
-                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                : 'bg-blue-600 text-white hover:bg-blue-700'
+              ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : 'bg-blue-600 text-white hover:bg-blue-700'
               }`}
           >
             Next

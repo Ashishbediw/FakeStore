@@ -11,7 +11,7 @@ type Product = {
 
 interface CartState {
     items: Product[];
-}   
+}
 
 const initialState: CartState = {
     items: [],

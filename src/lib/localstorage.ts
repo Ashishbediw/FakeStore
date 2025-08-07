@@ -1,7 +1,4 @@
-const CART_STORAGE_KEY = "cart_item";
-// const getCartKey = (userId:string) => {
-//     return `${CART_STORAGE_KEY}_${userId}`
-// }
+const CART_STORAGE_KEY = "cart_item"
 
 export const saveCartToLocalStorage = (items:any[]) => {
     if(typeof window !== "undefined"){
@@ -15,4 +12,4 @@ export const loadCartFromLocalStorage = (): any[] => {
         return data? JSON.parse(data) : [];
     }
     return [];
-};  
+};
