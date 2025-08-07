@@ -5,6 +5,7 @@ import { RootState } from "@/redux/store";
 import { useEffect, useState } from "react";
 import { loadCartFromLocalStorage } from "@/lib/localstorage";
 import { initializecart, removeFromCart } from "@/redux/slices/cartSlice";
+import { X } from "lucide-react";
 
 const Cart = () => {
     const cartItems = useSelector((state: RootState) => state.cart.items);
@@ -55,7 +56,7 @@ const Cart = () => {
                                         className="text-red-500 hover:text-red-700 text-sm"
                                         title="Remove from cart"
                                     >
-                                       <span className="text-lg">❌</span>
+                                       <X size={24} />
 
                                     </button>
                             </div>
