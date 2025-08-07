@@ -15,9 +15,7 @@ export default function ProductDetailPage() {
 
     if (!product) return <div className="text-center py-10 text-gray-500">Product not found.</div>;
 
-    function dispatch(arg0: any): void {
-        throw new Error('Function not implemented.');
-    }
+   
 
     return (
         <div className="max-w-5xl mx-auto px-4 py-10">
