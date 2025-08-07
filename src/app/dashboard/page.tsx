@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useDispatch, } from "react-redux";
 import { addToCart } from "../../redux/slices/cartSlice";
 import { signOut } from "next-auth/react";
-
+import { toast } from 'react-toastify';
 type Product = {
     id: number;
     title: string;
@@ -169,7 +169,7 @@ const Dashboard = () => {
                                  View Details
                             </button>
                             <button
-                                onClick={() => dispatch(addToCart(product))}
+                                onClick={() => {dispatch(addToCart(product));toast.success('Added to cart!'); router.push('/cart')}}
                                 className="mt-4 w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white text-sm font-medium py-2 px-4 rounded-md transition duration-200 shadow"
                             >
                                  Add to Cart

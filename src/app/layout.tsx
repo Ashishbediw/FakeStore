@@ -32,7 +32,7 @@ export default function RootLayout({
       >
         <Providers>
           {children}
-          <ToastContainer position="top-center" />
+          <ToastContainer position="top-right" />
         </Providers>
       </body>
     </html>
