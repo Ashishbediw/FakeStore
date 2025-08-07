@@ -2,6 +2,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { StoreApi } from "./api/storeApi";
 import cartReducer from "./slices/cartSlice";
+import { saveCartToLocalStorage } from "@/lib/localstorage";
 
 export const store = configureStore({
     reducer:{
@@ -12,6 +13,10 @@ export const store = configureStore({
     },
     middleware:(getDefaultMiddleware) => getDefaultMiddleware().concat(StoreApi.middleware),
     devTools: true,
+});
+store.subscribe(() =>{
+    const state = store.getState();
+    saveCartToLocalStorage(state.cart.items);
 })
 
 

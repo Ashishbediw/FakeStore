@@ -148,12 +148,12 @@ const Home = () => {
                 className="w-full h-48 object-contain mb-4 rounded"
               />
               <h3 className="text-lg font-semibold text-gray-800 truncate">{product.title}</h3>
-              <p className="text-sm text-gray-500 mt-1">Brand: {product.brand}</p>
+              {/* <p className="text-sm text-gray-500 mt-1">Brand: {product.brand}</p>
               <p className="text-sm text-gray-400">Category: {product.category}</p>
               <p className="text-lg font-bold text-blue-700 mt-2">${product.price}</p>
               {product.discount > 0 && (
                 <p className="text-sm text-green-600 mt-1">{product.discount}% OFF</p>
-              )}
+              )} */}
             </div>
           ))}
         </div>

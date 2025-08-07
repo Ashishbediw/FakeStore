@@ -1,8 +1,25 @@
 'use client';
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { useEffect, useState } from "react";
+import { loadCartFromLocalStorage } from "@/lib/localstorage";
+import { initializecart } from "@/redux/slices/cartSlice";
+import { useSession } from "next-auth/react";
+
 const Cart = () => {
-    const cartItems = useSelector((state:RootState) => state.cart.items)
+    const cartItems = useSelector((state:RootState) => state.cart.items);
+    const disPatch = useDispatch(); 
+    const {data : session, status} = useSession();
+    const [hydrated, setHydrated] = useState(false);
+
+    useEffect(() => {
+        const items = loadCartFromLocalStorage();
+        disPatch(initializecart(items));
+        setHydrated(true)
+    },[disPatch]);
+
+    if(!hydrated ) return null;
+
     return(
         <div className="max-w-4xl mx-auto px-4 py-10">
              <h1 className="text-2xl font-bold mb-6">🛒 Your Shopping Cart</h1>
