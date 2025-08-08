@@ -67,8 +67,10 @@ const Dashboard = () => {
         router.push('./cart');
     };
 
-    const handleLogout = () => {
-        signOut({ callbackUrl: '/' });
+    const handleLogout = async() => {
+        await signOut({ redirect: false });
+        router.push('/');
+        toast.success('logout successfully');
     };
 
     if (isLoading) return <p className="text-center text-lg">Loading...</p>;

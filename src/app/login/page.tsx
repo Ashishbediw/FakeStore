@@ -38,6 +38,7 @@ export default function LoginPage() {
     });
 
     if (res?.ok) {
+      toast.success("login successfully")
       router.push(callbackUrl);
     } else {
       toast.error("Invalid credentials", {
