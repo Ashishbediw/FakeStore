@@ -47,7 +47,7 @@ const Cart = () => {
                     onClick={handleBackButton}
                 >
                     <ArrowLeft size={18} />
-                    Back to Cart
+                    Back to Dashboard
                 </button>
                 <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center flex items-center justify-center gap-2">
                     🛒 Your Shopping Cart
