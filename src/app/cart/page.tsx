@@ -2,23 +2,15 @@
 
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import { useEffect, useState } from "react";
-import { loadCartFromLocalStorage } from "@/lib/localstorage";
-import { initializecart, removeFromCart } from "@/redux/slices/cartSlice";
+import {  removeFromCart } from "@/redux/slices/cartSlice";
 import { X } from "lucide-react";
 
 const Cart = () => {
     const cartItems = useSelector((state: RootState) => state.cart.items);
     const dispatch = useDispatch();
-    const [hydrated, setHydrated] = useState(false);
+   
 
-    useEffect(() => {
-        const items = loadCartFromLocalStorage();
-        dispatch(initializecart(items));
-        setHydrated(true);
-    }, [dispatch]);
-
-    if (!hydrated) return null;
+  
 
     const subtotal = cartItems.reduce((acc, item) => acc + item.price, 0);
 

@@ -1,25 +1,44 @@
-
-import { configureStore } from "@reduxjs/toolkit";
+import { configureStore, combineReducers } from "@reduxjs/toolkit";
 import { StoreApi } from "./api/storeApi";
 import cartReducer from "./slices/cartSlice";
-import { saveCartToLocalStorage } from "@/lib/localstorage";
+import storage from "redux-persist/lib/storage";
+import {
+  persistStore,
+  persistReducer,
+  FLUSH,
+  REHYDRATE,
+  PAUSE,
+  PERSIST,
+  PURGE,
+  REGISTER,
+} from "redux-persist";
+
+
+const rootReducer = combineReducers({
+  cart: cartReducer,
+  [StoreApi.reducerPath]: StoreApi.reducer,
+});
+
+const persistConfig = {
+  key: "root",
+  storage,
+  whitelist: ["cart"], 
+};
+
+
+const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
-    reducer:{
-         //cart slice
-         cart: cartReducer,
-            // Add the RTK Query reducer
-         [StoreApi.reducerPath]: StoreApi.reducer,
-    },
-    middleware:(getDefaultMiddleware) => getDefaultMiddleware().concat(StoreApi.middleware),
-    devTools: true,
+  reducer: persistedReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }).concat(StoreApi.middleware),
+  devTools: true,
 });
-store.subscribe(() =>{
-    const state = store.getState();
-    saveCartToLocalStorage(state.cart.items);
-})
 
-
-
+export const persistor = persistStore(store);
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
