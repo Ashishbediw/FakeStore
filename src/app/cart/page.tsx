@@ -1,13 +1,26 @@
 'use client';
 
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
-import {  removeFromCart } from "@/redux/slices/cartSlice";
+import {  addToCart, removeFromCart } from "@/redux/slices/cartSlice";
 import { X } from "lucide-react";
 
 const Cart = () => {
     const cartItems = useSelector((state: RootState) => state.cart.items);
     const dispatch = useDispatch();
+    useEffect(() => {
+        const item = localStorage.getItem("pendingCartItem");
+        if (item) {
+            try {
+                const product = JSON.parse(item);
+                dispatch(addToCart(product));
+            } catch (error) {
+                console.error("Failed to parse pendingCartItem", error);
+            }
+            sessionStorage.removeItem("pendingCartItem");
+        }
+    }, [dispatch]);
    
 
   

@@ -24,7 +24,8 @@ export default function ProductDetailPage() {
 
     const handleAddToCart = () => {
         if (!session) {
-            router.push("/login");
+            localStorage.setItem("pendingCartItem", JSON.stringify(product));
+            router.push(`/login?callbackUrl=/cart`);
         } else {
             toast.success('Added to cart!');
             dispatch(addToCart(product));

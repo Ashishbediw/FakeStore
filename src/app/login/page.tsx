@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useSearchParams } from "next/navigation"
 
 // Zod validation schema
 const loginSchema = z.object({
@@ -17,6 +18,8 @@ type LoginForm = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
 
   const {
     register,
@@ -31,10 +34,11 @@ export default function LoginPage() {
       email: data.email,
       password: data.password,
       redirect: false,
+      callbackUrl,
     });
 
     if (res?.ok) {
-      router.push("/dashboard");
+      router.push(callbackUrl);
     } else {
       toast.error("Invalid credentials", {
         position: "top-right",
